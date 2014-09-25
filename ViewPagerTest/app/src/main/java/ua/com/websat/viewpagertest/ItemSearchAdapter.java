@@ -61,7 +61,9 @@ public class ItemSearchAdapter extends BaseAdapter{
         if (searchItem.getThumbnail() != null) {
             ((ImageView) view.findViewById(R.id.list_item_search_imageview)).setOnClickListener(new OnImageClickListener(position));
             imageManager.fetchImage(this.context, 3600, searchItem.getThumbnail(), ((ImageView) view.findViewById(R.id.list_item_search_imageview)));
-        }
+        } else
+            ((ImageView) view.findViewById(R.id.list_item_search_imageview)).setImageResource(R.drawable.noimage);
+
 //        new DownloadImageTask((ImageView) view.findViewById(R.id.list_item_search_imageview)).execute(searchItem.getThumbnail());
 
 
