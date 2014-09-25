@@ -1,26 +1,25 @@
 package ua.com.websat.viewpagertest;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import java.util.ArrayList;
 
 /**
  * Created by Sat on 24.09.2014.
  */
-public class FavoriteFragment extends Fragment  implements CompoundButton.OnCheckedChangeListener {
+public class FavoriteFragment extends SherlockFragment  implements CompoundButton.OnCheckedChangeListener {
 
     private ItemSearchAdapter itemFavoriteAdapter;
     private ArrayList<SearchItem> favoriteItems;
@@ -66,7 +65,6 @@ public class FavoriteFragment extends Fragment  implements CompoundButton.OnChec
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
 
-//        ArrayList<SearchItem> favoriteItems = new ItemSearchAdapter(this.getActivity(), searchItems).getFavorites();
         itemFavoriteAdapter = new ItemSearchAdapter(this.getActivity(), favoriteItems, this);
 
 
@@ -92,11 +90,13 @@ public class FavoriteFragment extends Fragment  implements CompoundButton.OnChec
 
     public void saveToDB() {
         ProgressDialog progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage("Loading...");
+        progressDialog.setMessage(getString(R.string.loading));
         progressDialog.show();
 
         ContentValues cv = new ContentValues();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        db.delete("favorites", null, null);
 
         for (SearchItem item: favoriteItems) {
             cv.put("title", item.getTitle());
@@ -105,12 +105,14 @@ public class FavoriteFragment extends Fragment  implements CompoundButton.OnChec
 
             db.insert("favorites", null, cv);
         }
-//        dbHelper.close();
         db.close();
         progressDialog.dismiss();
     }
     public void loadFromDB() {
-//        ContentValues cv = new ContentValues();
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.show();
+
         DBHelper dbHelper = new DBHelper(this.getActivity());
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -120,6 +122,7 @@ public class FavoriteFragment extends Fragment  implements CompoundButton.OnChec
             int colImageIndex = cursor.getColumnIndex("image");
             int colThumbnailIndex = cursor.getColumnIndex("thumbnail");
 
+            favoriteItems.clear();
             do {
                 String title = cursor.getString(colTitleIndex);
                 String image = cursor.getString(colImageIndex);
@@ -130,12 +133,16 @@ public class FavoriteFragment extends Fragment  implements CompoundButton.OnChec
         }
         cursor.close();
         db.close();
-//        dbHelper.close();
+        progressDialog.dismiss();
     }
 
     public void clearDB() {
+        ProgressDialog progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.show();
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete("favorites", null, null);
         db.close();
+        progressDialog.dismiss();
     }
 }

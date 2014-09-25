@@ -1,21 +1,31 @@
 package ua.com.websat.viewpagertest;
 
-import android.app.ActionBar;
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+//import android.app.ActionBar;
+//import android.app.Activity;
+//import android.app.Fragment;
+//import android.app.FragmentManager;
+//import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v13.app.FragmentPagerAdapter;
+//import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+//import android.view.Menu;
+//import android.view.MenuItem;
+
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity implements ActionBar.TabListener, FavoritesListener {
+public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener, FavoritesListener {
 
     private ArrayList<SearchItem> searchItems = new ArrayList<SearchItem>();
     private ArrayList<SearchItem> favoriteItems = new ArrayList<SearchItem>();
@@ -43,12 +53,12 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Fav
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -78,15 +88,19 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Fav
     }
 
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+//        return super.onCreateOptionsMenu(menu);
+        getSupportMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -152,6 +166,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Fav
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
+//    public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -159,7 +174,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener, Fav
         }
 
         @Override
-        public Fragment getItem(int position) {
+        public SherlockFragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
 

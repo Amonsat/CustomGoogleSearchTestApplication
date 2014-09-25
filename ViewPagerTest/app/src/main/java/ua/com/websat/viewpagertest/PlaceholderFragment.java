@@ -1,7 +1,6 @@
 package ua.com.websat.viewpagertest;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,19 +11,19 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
+
+import com.actionbarsherlock.app.SherlockFragment;
 
 import java.util.ArrayList;
 
 /**
  * Created by Sat on 24.09.2014.
  */
-//public class PlaceholderFragment extends Fragment implements OnScrollListener{
-public class PlaceholderFragment extends Fragment implements OnCheckedChangeListener {
+public class PlaceholderFragment extends SherlockFragment implements OnCheckedChangeListener {
     private ItemSearchAdapter itemSearchAdapter;
     private ArrayList<SearchItem> searchItems;
     private static final String ARG_ITEMS = "items";
@@ -38,17 +37,14 @@ public class PlaceholderFragment extends Fragment implements OnCheckedChangeList
         this.searchItems = items;
     }
 
-//    public static PlaceholderFragment newInstance(ArrayList<SearchItem> searchItems) {
       public static PlaceholderFragment newInstance() {
         PlaceholderFragment fragment = new PlaceholderFragment();
-//        Bundle args = new Bundle();
-//        args.putExtra(ARG_ITEMS, searchItems);
-//        fragment.setArguments(args);
         return fragment;
     }
 
     public PlaceholderFragment() {
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -57,6 +53,7 @@ public class PlaceholderFragment extends Fragment implements OnCheckedChangeList
             favoritesListener = (FavoritesListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.getClass().getSimpleName() + " should implement " + FavoritesListener.class.getSimpleName());
+
         }
     }
 
@@ -133,11 +130,6 @@ public class PlaceholderFragment extends Fragment implements OnCheckedChangeList
         itemSearchAdapter.notifyDataSetChanged();
     }
 
-//    public void update(ArrayList<SearchItem> searchItems) {
-//        itemSearchAdapter.clear();
-//        for (SearchItem item: searchItems) itemSearchAdapter.add(item);
-//    }
-
     public class FetchSearchTask extends ua.com.websat.viewpagertest.FetchSearchTask {
         public FetchSearchTask(Context context) {
             super(context);
@@ -147,21 +139,9 @@ public class PlaceholderFragment extends Fragment implements OnCheckedChangeList
         protected void onPostExecute(ArrayList<SearchItem> result) {
             super.onPostExecute(result);
             if (result != null) {
-//                itemSearchAdapter.clear();
-//                for (SearchItem item: result) itemSearchAdapter.add(item);
                 itemSearchAdapter.addAll(result);
                 itemSearchAdapter.notifyDataSetChanged();
-
-                ((MainActivity)getActivity()).setSearchData(result);   // ???
-
-//                int index = listView.getFirstVisiblePosition();
-//                int top = (listView.getChildAt(0) == null) ? 0 : listView.getChildAt(0).getTop();
-//                listView.setSelectionFromTop(index, top);
-
-
-//                ((MainActivity)getActivity()).setFavoriteData(itemSearchAdapter.getFavorites());
             }
-//            searchItems
 
         }
 

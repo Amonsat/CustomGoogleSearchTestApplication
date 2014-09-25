@@ -1,25 +1,24 @@
 package ua.com.websat.viewpagertest;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 /**
  * Created by Sat on 24.09.2014.
  */
-public class ImageViewFragment extends Fragment {
+public class ImageViewFragment extends SherlockFragment {
     private static final String ARG_POSITION = "section_number";
     ImageManager imageManager = new ImageManager();
 
     public ImageViewFragment() {
-        // Required empty public constructor
     }
 
     public void showImage(String image) {
-//        new DownloadImageTask((ImageView) getView().findViewById(R.id.imageView)).execute(image);
         imageManager.fetchImage(this.getActivity(), 3600, image, ((ImageView)getView().findViewById(R.id.imageView)));
     }
 

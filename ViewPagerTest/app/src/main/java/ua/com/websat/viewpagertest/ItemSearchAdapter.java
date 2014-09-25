@@ -1,6 +1,7 @@
 package ua.com.websat.viewpagertest;
 
-import android.app.Activity;
+//import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -9,10 +10,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import android.support.v4.app.FragmentManager;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+//import com.actionbarsherlock.app.SherlockActivity;
 
 import java.util.ArrayList;
 
@@ -64,11 +68,7 @@ public class ItemSearchAdapter extends BaseAdapter{
         } else
             ((ImageView) view.findViewById(R.id.list_item_search_imageview)).setImageResource(R.drawable.noimage);
 
-//        new DownloadImageTask((ImageView) view.findViewById(R.id.list_item_search_imageview)).execute(searchItem.getThumbnail());
-
-
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.list_item_search_checkbox);
-//        checkBox.setOnCheckedChangeListener(checkedChangeListener);
         checkBox.setOnCheckedChangeListener(listener);
         checkBox.setTag(position);
         checkBox.setChecked(searchItem.getFavorite());
@@ -101,16 +101,9 @@ public class ItemSearchAdapter extends BaseAdapter{
     }
 
     void addAll(ArrayList<SearchItem> items) {
-//        this.clear();
         for (SearchItem item: items) this.add(item);
     }
 
-//    OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
-//        @Override
-//        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//            getItem((Integer) buttonView.getTag()).setFavorite(isChecked);
-//        }
-//    };
 
     class OnImageClickListener implements OnClickListener {
         int position;
@@ -121,9 +114,9 @@ public class ItemSearchAdapter extends BaseAdapter{
 
         @Override
         public void onClick(View v) {
-            final Activity activity = (Activity) context;
+            final SherlockFragmentActivity activity = (SherlockFragmentActivity) context;
             String image = getSearchItem(this.position).getImage();
-            ImageViewFragment fragment = (ImageViewFragment)activity.getFragmentManager().findFragmentById(R.id.fragment_image_view);
+            ImageViewFragment fragment = (ImageViewFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_image_view);
             if (fragment != null && fragment.isInLayout()) {
                 fragment.showImage(image);
             } else {
