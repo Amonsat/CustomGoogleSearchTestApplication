@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 
-public class MainActivity extends Activity implements ActionBar.TabListener {
+public class MainActivity extends Activity implements ActionBar.TabListener, FavoritesListener {
 
     private ArrayList<SearchItem> searchItems = new ArrayList<SearchItem>();
     private ArrayList<SearchItem> favoriteItems = new ArrayList<SearchItem>();
@@ -78,6 +78,9 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
     }
 
 
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -90,11 +93,24 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
 
-            return true;
+//        int id = item.getItemId();
+//        if (id == R.id.action_save) {
+//            return true;
+//        }
+
+        switch (item.getItemId()) {
+            case R.id.action_save:
+                favoriteFragment.saveToDB();
+                return true;
+            case R.id.action_load:
+                favoriteFragment.loadFromDB();
+                return true;
+            case R.id.action_clear:
+                favoriteFragment.clearDB();
+                return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -119,6 +135,17 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
     public void setFavoriteData(ArrayList<SearchItem> favoriteData) {
         this.favoriteItems = favoriteData;
+    }
+
+    @Override
+    public void add(SearchItem item) {
+        favoriteFragment.addFavorite(item);
+    }
+
+    @Override
+    public void remove(SearchItem item) {
+        favoriteFragment.removeFavorite(item);
+        searchFragment.uncheckSearchItem(item);
     }
 
     /**

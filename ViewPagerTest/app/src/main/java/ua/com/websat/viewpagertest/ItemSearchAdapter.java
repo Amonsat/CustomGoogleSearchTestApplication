@@ -24,12 +24,14 @@ public class ItemSearchAdapter extends BaseAdapter{
     LayoutInflater layoutInflater;
     ArrayList<SearchItem> searchItems;
     ImageManager imageManager = new ImageManager();
+    private OnCheckedChangeListener listener;
 
 
-    ItemSearchAdapter(Context context, ArrayList<SearchItem> searchItems) {
+    ItemSearchAdapter(Context context, ArrayList<SearchItem> searchItems, OnCheckedChangeListener listener) {
         this.context = context;
         this.searchItems = searchItems;
         this.layoutInflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.listener = listener;
     }
 
     @Override
@@ -64,7 +66,8 @@ public class ItemSearchAdapter extends BaseAdapter{
 
 
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.list_item_search_checkbox);
-        checkBox.setOnCheckedChangeListener(checkedChangeListener);
+//        checkBox.setOnCheckedChangeListener(checkedChangeListener);
+        checkBox.setOnCheckedChangeListener(listener);
         checkBox.setTag(position);
         checkBox.setChecked(searchItem.getFavorite());
 
@@ -91,19 +94,21 @@ public class ItemSearchAdapter extends BaseAdapter{
         searchItems.add(searchItem);
     }
 
+    void remove(SearchItem searchItem) {
+        searchItems.remove(searchItem);
+    }
+
     void addAll(ArrayList<SearchItem> items) {
 //        this.clear();
         for (SearchItem item: items) this.add(item);
     }
 
-    OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            getItem((Integer) buttonView.getTag()).setFavorite(isChecked);
-//            Activity activity = (Activity)context;
-//            ((MainActivity) activity).
-        }
-    };
+//    OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {
+//        @Override
+//        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//            getItem((Integer) buttonView.getTag()).setFavorite(isChecked);
+//        }
+//    };
 
     class OnImageClickListener implements OnClickListener {
         int position;

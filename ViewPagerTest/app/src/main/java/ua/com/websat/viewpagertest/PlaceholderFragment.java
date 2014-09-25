@@ -1,5 +1,6 @@
 package ua.com.websat.viewpagertest;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -12,6 +13,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
@@ -21,7 +24,7 @@ import java.util.ArrayList;
  * Created by Sat on 24.09.2014.
  */
 //public class PlaceholderFragment extends Fragment implements OnScrollListener{
-public class PlaceholderFragment extends Fragment{
+public class PlaceholderFragment extends Fragment implements OnCheckedChangeListener {
     private ItemSearchAdapter itemSearchAdapter;
     private ArrayList<SearchItem> searchItems;
     private static final String ARG_ITEMS = "items";
@@ -29,6 +32,7 @@ public class PlaceholderFragment extends Fragment{
     private EditText editText;
     FetchSearchTask searchTask = new FetchSearchTask(getActivity());
     ListView listView;
+    private FavoritesListener favoritesListener;
 
     public void setData(ArrayList<SearchItem> items) {
         this.searchItems = items;
@@ -47,12 +51,22 @@ public class PlaceholderFragment extends Fragment{
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            favoritesListener = (FavoritesListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.getClass().getSimpleName() + " should implement " + FavoritesListener.class.getSimpleName());
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
 //        searchItems = new ArrayList<SearchItem>();
-        itemSearchAdapter = new ItemSearchAdapter(this.getActivity(), searchItems);
+        itemSearchAdapter = new ItemSearchAdapter(this.getActivity(), searchItems, this);
 
         listView = (ListView) rootView.findViewById(R.id.listview_search);
         footer = inflater.inflate(R.layout.listview_footer, null);
@@ -99,6 +113,24 @@ public class PlaceholderFragment extends Fragment{
             }
         });
         return rootView;
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        SearchItem item = itemSearchAdapter.getItem((Integer) buttonView.getTag());
+        item.setFavorite(isChecked);
+
+        if (isChecked) {
+            favoritesListener.add(item);
+        } else {
+            favoritesListener.remove(item);
+        }
+    }
+
+    public void uncheckSearchItem(SearchItem item) {
+        for (SearchItem i: searchItems)
+            if(i.getTitle() == item.getTitle()) i.setFavorite(false);
+        itemSearchAdapter.notifyDataSetChanged();
     }
 
 //    public void update(ArrayList<SearchItem> searchItems) {
