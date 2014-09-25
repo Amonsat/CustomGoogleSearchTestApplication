@@ -117,6 +117,10 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
         this.searchItems = searchData;
     }
 
+    public void setFavoriteData(ArrayList<SearchItem> favoriteData) {
+        this.favoriteItems = favoriteData;
+    }
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -142,7 +146,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 //                    return PlaceholderFragment.newInstance(searchItems);
                 case 1: {
                     favoriteFragment = new FavoriteFragment();
-                    favoriteFragment.setData(searchItems);
+                    favoriteFragment.setData(favoriteItems);
                     return favoriteFragment;
                 }
 //                    return FavoriteFragment.newInstance();

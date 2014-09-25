@@ -52,4 +52,11 @@ public class SearchItem {
         this.setThumbnail(thumbnail);
         this.favorite = favorite;
     }
+
+    public SearchItem(String title, String image, String thumbnail, boolean favorite) {
+        this.setTitle(title);
+        this.setImage(image);
+        this.setThumbnail(thumbnail);
+        this.favorite = favorite;
+    }
 }

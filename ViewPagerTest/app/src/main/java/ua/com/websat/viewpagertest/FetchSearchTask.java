@@ -25,9 +25,9 @@ import java.util.ArrayList;
 //public class FetchSearchTask extends AsyncTask<String, Void, String[]> {
 public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchItem>> {
     private final String LOG_TAG = PlaceholderFragment.FetchSearchTask.class.getSimpleName();
-//    private final ProgressDialog dialog = new ProgressDialog(this.get);
-    private ProgressDialog dialog;
     private Context context;
+
+//    private ProgressDialog dialog;
 
     public FetchSearchTask(Context context) {
         this.context = context;
@@ -36,9 +36,9 @@ public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchIte
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        this.dialog = new ProgressDialog(context);
-        this.dialog.setMessage("Loading...");
-        this.dialog.show();
+//        this.dialog = new ProgressDialog(context);
+//        this.dialog.setMessage("Loading...");
+//        this.dialog.show();
     }
 
     private ArrayList<SearchItem> getSearchDataFromJson(String searchJsonStr)
@@ -50,7 +50,7 @@ public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchIte
 //            final String GSC_TOTALRESULTS = "totalResults";
         final String GCS_ITEMS = "items";
         final String GSC_ITEM_TITLE = "title";
-        final String GSC_ITEM_CACHE_ID = "cacheId";
+//        final String GSC_ITEM_CACHE_ID = "cacheId";
         final String GSC_ITEM_PAGEMAP = "pagemap";
         final String GSC_ITEM_PAGEMAP_CSE_IMAGE = "cse_image";
         final String GSC_ITEM_PAGEMAP_CSE_THUMBNAIL = "cse_thumbnail";
@@ -66,28 +66,30 @@ public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchIte
 
             for (int i = 0; i < searchArray.length(); i++) {
                 JSONObject item = searchArray.getJSONObject(i);
-                String itemCacheId = item.getString(GSC_ITEM_CACHE_ID);
+//                String itemCacheId = item.getString(GSC_ITEM_CACHE_ID);
                 String itemTitle = item.getString(GSC_ITEM_TITLE);
 
                 JSONObject pagemap = item.getJSONObject(GSC_ITEM_PAGEMAP);
 
-                JSONArray cseImageArray = pagemap.getJSONArray(GSC_ITEM_PAGEMAP_CSE_IMAGE);
-                String itemImage = "";
-                if (cseImageArray.length() > 0) {
+
+                JSONArray cseImageArray = pagemap.optJSONArray(GSC_ITEM_PAGEMAP_CSE_IMAGE);
+                String itemImage = null;
+                if (cseImageArray != null) {
                     JSONObject cseImage = cseImageArray.getJSONObject(0);
                     itemImage = cseImage.getString(SOURCE);
                 }
 
-                JSONArray cseThumbnailArray = pagemap.getJSONArray(GSC_ITEM_PAGEMAP_CSE_THUMBNAIL);
-                String itemThumbnail = "";
-                if (cseThumbnailArray.length() > 0) {
+                JSONArray cseThumbnailArray = pagemap.optJSONArray(GSC_ITEM_PAGEMAP_CSE_THUMBNAIL);
+                String itemThumbnail = null;
+                if (cseThumbnailArray != null) {
                     JSONObject cseThumbnail = cseThumbnailArray.getJSONObject(0);
                     itemThumbnail = cseThumbnail.getString(SOURCE);
                 }
 
 
 //                resultStrs[i] = itemTitle;
-                searchResult.add(new SearchItem(itemCacheId, itemTitle, itemImage, itemThumbnail, false));
+//                searchResult.add(new SearchItem(itemCacheId, itemTitle, itemImage, itemThumbnail, false));
+                searchResult.add(new SearchItem(itemTitle, itemImage, itemThumbnail, false));
             }
         }catch (Exception e) {
             e.printStackTrace();
@@ -116,19 +118,22 @@ public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchIte
             final String QUERY_PARAM = "q";
             final String CX_PARAM = "cx";
             final String KEY_PARAM = "key";
+            final String START_INDEX = "start";
 
 
             Uri builtUri = Uri.parse(SEARCH_BASE_URL).buildUpon()
                     .appendQueryParameter(CX_PARAM, cx)
                     .appendQueryParameter(KEY_PARAM, key)
                     .appendQueryParameter(QUERY_PARAM, params[0])
+                    .appendQueryParameter(START_INDEX, params[1])
                     .build();
 
             URL url = new URL(builtUri.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
 
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+//            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            InputStream in = url.openStream();
             StringBuffer buffer = new StringBuffer();
             if (in == null) {
                 return null;
@@ -175,6 +180,6 @@ public class FetchSearchTask extends AsyncTask<String, Void, ArrayList<SearchIte
     @Override
     protected void onPostExecute(ArrayList<SearchItem> result) {
 //        PlaceholderFragment.
-        if (dialog.isShowing()) dialog.dismiss();
+//        if (dialog.isShowing()) dialog.dismiss();
     }
 }

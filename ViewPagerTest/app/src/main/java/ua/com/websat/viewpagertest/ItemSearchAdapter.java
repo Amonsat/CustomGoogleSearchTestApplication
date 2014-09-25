@@ -23,6 +23,7 @@ public class ItemSearchAdapter extends BaseAdapter{
     Context context;
     LayoutInflater layoutInflater;
     ArrayList<SearchItem> searchItems;
+    ImageManager imageManager = new ImageManager();
 
 
     ItemSearchAdapter(Context context, ArrayList<SearchItem> searchItems) {
@@ -54,9 +55,13 @@ public class ItemSearchAdapter extends BaseAdapter{
         SearchItem searchItem = getItem(position);
 
         ((TextView) view.findViewById(R.id.list_item_search_textview)).setText(searchItem.getTitle());
-        ((ImageView) view.findViewById(R.id.list_item_search_imageview)).setOnClickListener(new OnImageClickListener(position));
 
-        new DownloadImageTask((ImageView) view.findViewById(R.id.list_item_search_imageview)).execute(searchItem.getThumbnail());
+        if (searchItem.getThumbnail() != null) {
+            ((ImageView) view.findViewById(R.id.list_item_search_imageview)).setOnClickListener(new OnImageClickListener(position));
+            imageManager.fetchImage(this.context, 3600, searchItem.getThumbnail(), ((ImageView) view.findViewById(R.id.list_item_search_imageview)));
+        }
+//        new DownloadImageTask((ImageView) view.findViewById(R.id.list_item_search_imageview)).execute(searchItem.getThumbnail());
+
 
         CheckBox checkBox = (CheckBox) view.findViewById(R.id.list_item_search_checkbox);
         checkBox.setOnCheckedChangeListener(checkedChangeListener);
@@ -84,6 +89,11 @@ public class ItemSearchAdapter extends BaseAdapter{
 
     void add(SearchItem searchItem) {
         searchItems.add(searchItem);
+    }
+
+    void addAll(ArrayList<SearchItem> items) {
+//        this.clear();
+        for (SearchItem item: items) this.add(item);
     }
 
     OnCheckedChangeListener checkedChangeListener = new OnCheckedChangeListener() {

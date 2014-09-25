@@ -16,10 +16,10 @@ import java.util.ArrayList;
 public class FavoriteFragment extends Fragment {
 
     private ItemSearchAdapter itemFavoriteAdapter;
-    private ArrayList<SearchItem> searchItems;
+    private ArrayList<SearchItem> favoriteItems;
 
     public void setData(ArrayList<SearchItem> items) {
-        this.searchItems = items;
+        this.favoriteItems = items;
     }
 
     public static FavoriteFragment newInstance() {
@@ -31,7 +31,9 @@ public class FavoriteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_favorite, container, false);
 
-        itemFavoriteAdapter = new ItemSearchAdapter(this.getActivity(), searchItems);
+//        ArrayList<SearchItem> favoriteItems = new ItemSearchAdapter(this.getActivity(), searchItems).getFavorites();
+        itemFavoriteAdapter = new ItemSearchAdapter(this.getActivity(), favoriteItems);
+
 
         ListView listView = (ListView) rootView.findViewById(R.id.listview_favorite);
         listView.setAdapter(itemFavoriteAdapter);

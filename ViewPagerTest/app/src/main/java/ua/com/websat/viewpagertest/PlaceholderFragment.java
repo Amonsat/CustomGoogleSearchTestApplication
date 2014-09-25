@@ -2,11 +2,15 @@ package ua.com.websat.viewpagertest;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -16,10 +20,15 @@ import java.util.ArrayList;
 /**
  * Created by Sat on 24.09.2014.
  */
+//public class PlaceholderFragment extends Fragment implements OnScrollListener{
 public class PlaceholderFragment extends Fragment{
     private ItemSearchAdapter itemSearchAdapter;
     private ArrayList<SearchItem> searchItems;
     private static final String ARG_ITEMS = "items";
+    private View footer;
+    private EditText editText;
+    FetchSearchTask searchTask = new FetchSearchTask(getActivity());
+    ListView listView;
 
     public void setData(ArrayList<SearchItem> items) {
         this.searchItems = items;
@@ -45,10 +54,29 @@ public class PlaceholderFragment extends Fragment{
 //        searchItems = new ArrayList<SearchItem>();
         itemSearchAdapter = new ItemSearchAdapter(this.getActivity(), searchItems);
 
-        ListView listView = (ListView) rootView.findViewById(R.id.listview_search);
+        listView = (ListView) rootView.findViewById(R.id.listview_search);
+        footer = inflater.inflate(R.layout.listview_footer, null);
+        listView.addFooterView(footer);
         listView.setAdapter(itemSearchAdapter);
+        listView.setOnScrollListener(new OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-        final EditText editText = (EditText) rootView.findViewById(R.id.editText);
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                boolean loadMore = firstVisibleItem + visibleItemCount >= totalItemCount;
+
+                if (loadMore && searchTask.getStatus() == AsyncTask.Status.FINISHED) {
+                    searchTask = new FetchSearchTask(getActivity());
+                    searchTask.execute(editText.getText().toString(), Integer.toString(totalItemCount + 1));
+                }
+            }
+        });
+
+        editText = (EditText) rootView.findViewById(R.id.editText);
+
         editText.setOnKeyListener(new EditText.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (event.getAction() == KeyEvent.ACTION_DOWN)
@@ -57,8 +85,11 @@ public class PlaceholderFragment extends Fragment{
                     {
                         case KeyEvent.KEYCODE_DPAD_CENTER:
                         case KeyEvent.KEYCODE_ENTER:
-                            FetchSearchTask searchTask = new FetchSearchTask(getActivity());
-                            searchTask.execute(editText.getText().toString());
+                            itemSearchAdapter.clear();
+                            searchTask = new FetchSearchTask(getActivity());
+                            searchTask.execute(editText.getText().toString(), "1");
+                            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
                             return true;
                         default:
                             break;
@@ -84,10 +115,19 @@ public class PlaceholderFragment extends Fragment{
         protected void onPostExecute(ArrayList<SearchItem> result) {
             super.onPostExecute(result);
             if (result != null) {
-                itemSearchAdapter.clear();
-                for (SearchItem item: result) itemSearchAdapter.add(item);
+//                itemSearchAdapter.clear();
+//                for (SearchItem item: result) itemSearchAdapter.add(item);
+                itemSearchAdapter.addAll(result);
                 itemSearchAdapter.notifyDataSetChanged();
-                ((MainActivity)getActivity()).setSearchData(result);
+
+                ((MainActivity)getActivity()).setSearchData(result);   // ???
+
+//                int index = listView.getFirstVisiblePosition();
+//                int top = (listView.getChildAt(0) == null) ? 0 : listView.getChildAt(0).getTop();
+//                listView.setSelectionFromTop(index, top);
+
+
+//                ((MainActivity)getActivity()).setFavoriteData(itemSearchAdapter.getFavorites());
             }
 //            searchItems
 

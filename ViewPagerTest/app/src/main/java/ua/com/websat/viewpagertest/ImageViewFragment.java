@@ -12,13 +12,15 @@ import android.widget.ImageView;
  */
 public class ImageViewFragment extends Fragment {
     private static final String ARG_POSITION = "section_number";
+    ImageManager imageManager = new ImageManager();
 
     public ImageViewFragment() {
         // Required empty public constructor
     }
 
     public void showImage(String image) {
-        new DownloadImageTask((ImageView) getView().findViewById(R.id.imageView)).execute(image);
+//        new DownloadImageTask((ImageView) getView().findViewById(R.id.imageView)).execute(image);
+        imageManager.fetchImage(this.getActivity(), 3600, image, ((ImageView)getView().findViewById(R.id.imageView)));
     }
 
 
